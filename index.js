@@ -64,15 +64,15 @@ app.get("/twilio/send", async (req, res) => {
       res.status(400).send(`Unable to send message: ${error.message}`);
     });
 });
-app.post("/gpt-user-greeting", async (req, res) => {
+app.post("/gpt-chat", async (req, res) => {
   try {
-    const userName = req.body.userName;
+    const message = req.body.message;
     const api = new ChatGPTAPI({
       apiKey: process.env.OPENAI_API_KEY,
     });
-    const chatgptResponse = await api.sendMessage(`say hello to ${userName}`);
+    const chatgptResponse = await api.sendMessage(message);
     res.status(200).json(chatgptResponse.text);
-    // res.status(200).json(userName);
+    // res.status(200).json(message);
   } catch (err) {
     console.log(`error sending to chatGpt", ${err}`);
     res.status(500).json(err);
