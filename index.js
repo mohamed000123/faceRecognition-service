@@ -30,6 +30,26 @@ app.get("/", (req, res) => {
   res.status(200).send("Welcome to my app");
 });
 
+app.post("/user-greeting", async (req, res) => {
+  try {
+    const { userName, userJob } = req.body;
+
+    const api = new ChatGPTAPI({
+      apiKey: process.env.OPENAI_API_KEY,
+    });
+    const chatgptResponse =
+      // await api.sendMessage(`say hello to ${userName}, he works as a ${userJob}}
+      await api.sendMessage(
+        `${userJob} انه يعمل ك , ${userName}  قل مرحبا ل  `
+      );
+    res.status(200).json(chatgptResponse.text);
+    // res.status(200).json("hello mohamed amin, how are you doing today");
+  } catch (err) {
+    console.log(`error sending to chatGpt", ${err}`);
+    res.status(500).json(err);
+  }
+});
+
 app.post("/twilio/receive", async (req, res) => {
   const from = req.body.From;
   const message = req.body.Body;
@@ -72,7 +92,11 @@ app.post("/gpt-chat", async (req, res) => {
     });
     const chatgptResponse = await api.sendMessage(message);
     res.status(200).json(chatgptResponse.text);
-    // res.status(200).json(message);
+    // res
+    //   .status(200)
+    //   .json(
+    //     "hello mohamed i am chatgpt, how are you today i hope you are doing well"
+    //   );
   } catch (err) {
     console.log(`error sending to chatGpt", ${err}`);
     res.status(500).json(err);
