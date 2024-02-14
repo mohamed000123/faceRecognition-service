@@ -37,11 +37,9 @@ app.post("/user-greeting", async (req, res) => {
     const api = new ChatGPTAPI({
       apiKey: process.env.OPENAI_API_KEY,
     });
-    const chatgptResponse =
-      // await api.sendMessage(`say hello to ${userName}, he works as a ${userJob}}
-      await api.sendMessage(
-        `${userJob} انه يعمل ك , ${userName}  قل مرحبا ل  `
-      );
+    const chatgptResponse = await api.sendMessage(
+      `${userJob} انه يعمل ك ,${userName}  قل مرحبا ل  `
+    );
     res.status(200).json(chatgptResponse.text);
     // res.status(200).json("hello mohamed amin, how are you doing today");
   } catch (err) {
@@ -90,13 +88,12 @@ app.post("/gpt-chat", async (req, res) => {
     const api = new ChatGPTAPI({
       apiKey: process.env.OPENAI_API_KEY,
     });
-    const chatgptResponse = await api.sendMessage(message);
+    const question = `
+    اجب فقط فى عشر كلمات لاغير
+    ${message}`;
+    const chatgptResponse = await api.sendMessage(question);
     res.status(200).json(chatgptResponse.text);
-    // res
-    //   .status(200)
-    //   .json(
-    //     "hello mohamed i am chatgpt, how are you today i hope you are doing well"
-    //   );
+    // res.status(200).json(message + message);
   } catch (err) {
     console.log(`error sending to chatGpt", ${err}`);
     res.status(500).json(err);
