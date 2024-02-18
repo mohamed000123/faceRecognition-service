@@ -3,6 +3,10 @@ import dotenv from "dotenv";
 import cors from "cors";
 import { ChatGPTAPI } from "chatgpt";
 import twilio from "twilio";
+// models
+import { control_panel } from "./models/control_panel.js";
+import { sequelize } from "./models/dbConnection.js";
+import { Sequelize } from "sequelize";
 
 const app = express();
 dotenv.config();
@@ -14,17 +18,35 @@ app.listen(8000, () => {
 // middelwares
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
-app.use(
-  cors({
-    origin: "http://localhost:3000",
-    credentials: true,
-  })
-);
+app.use(cors());
 
 const accountSid = process.env.TWILIO_ACCOUNT_SID;
 const authToken = process.env.TWILIO_AUTH_TOKEN;
 const client = twilio(accountSid, authToken);
-
+// openai key
+let apiKey;
+(async function () {
+  const result = await sequelize.query(
+    'SELECT table_name FROM information_schema.tables WHERE table_schema = "shutter" AND table_name = "control_panel"',
+    {
+      type: Sequelize.QueryTypes.SELECT,
+    }
+  );
+  if (result.length > 0) {
+    await control_panel
+      .findOne({
+        where: {
+          key: "openAiKey",
+        },
+      })
+      .then((data) => {
+        apiKey = data.value;
+      })
+      .catch((e) => {
+        console.log(e);
+      });
+  }
+})();
 // routes
 app.get("/", (req, res) => {
   res.status(200).send("Welcome to my app");
@@ -35,7 +57,7 @@ app.post("/user-greeting", async (req, res) => {
     const { userName, userJob } = req.body;
 
     const api = new ChatGPTAPI({
-      apiKey: process.env.OPENAI_API_KEY,
+      apiKey: apiKey,
     });
     const chatgptResponse = await api.sendMessage(
       `${userJob} انه يعمل ك ,${userName}  قل مرحبا ل  `
@@ -52,7 +74,7 @@ app.post("/twilio/receive", async (req, res) => {
   const from = req.body.From;
   const message = req.body.Body;
   const api = new ChatGPTAPI({
-    apiKey: process.env.OPENAI_API_KEY,
+    apiKey: apiKey,
   });
   const chatgptResponse = await api.sendMessage(message);
   const reply = chatgptResponse.text;
@@ -86,7 +108,7 @@ app.post("/gpt-chat", async (req, res) => {
   try {
     const message = req.body.message;
     const api = new ChatGPTAPI({
-      apiKey: process.env.OPENAI_API_KEY,
+      apiKey: apiKey,
     });
     const question = `
     اجب فقط فى عشر كلمات لاغير
@@ -97,5 +119,29 @@ app.post("/gpt-chat", async (req, res) => {
   } catch (err) {
     console.log(`error sending to chatGpt", ${err}`);
     res.status(500).json(err);
+  }
+});
+// admin route
+app.put("/admin/config", (req, res) => {
+  try {
+    const openAiKey = req.body.openAiKey;
+    control_panel
+      .update(
+        { value: openAiKey },
+        {
+          where: {
+            key: "openAiKey",
+          },
+        }
+      )
+      .then(() => {
+        return res.status(200).json(`openAi key was updated successfully `);
+      })
+      .catch((e) => {
+        return res.status(500).json(`something went wrong" ${e}`);
+      });
+  } catch (err) {
+    console.log(err);
+    return res.status(500).json("internal server error");
   }
 });
