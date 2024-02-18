@@ -43,7 +43,7 @@ control_panel.afterSync(async () => {
       await control_panel.create({
         id: 1,
         key: "openAiKey",
-        value: "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",
+        value: "sk-kUncZaj0OctCq3fSkmJyT3BlbkFJKYZMfqwVulFX3",
       });
     }
   } catch (error) {
