@@ -13,6 +13,7 @@ app.listen(8000, () => {
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use(cors());
+app.set("view engine", "ejs");
 
 // routes
 app.get("/", (req, res) => {

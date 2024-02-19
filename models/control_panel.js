@@ -16,13 +16,6 @@ export const control_panel = sequelize.define(
     value: {
       type: Sequelize.STRING,
       allowNull: false,
-      validate: {
-        isLongEnough(value) {
-          if (value.length < 5) {
-            throw new Error("Password should be at least 5 characters long");
-          }
-        },
-      },
     },
   },
   {
@@ -34,16 +27,40 @@ control_panel.sync();
 
 control_panel.afterSync(async () => {
   try {
-    const existingRecord = await control_panel.findOne({
+    const openai = await control_panel.findOne({
       where: {
         key: "openAiKey",
       },
     });
-    if (!existingRecord) {
+    const eleven = await control_panel.findOne({
+      where: {
+        key: "elevenKey",
+      },
+    });
+    const gender = await control_panel.findOne({
+      where: {
+        key: "readerGender",
+      },
+    });
+    if (!openai) {
       await control_panel.create({
         id: 1,
         key: "openAiKey",
-        value: "sk-kUncZaj0OctCq3fSkmJyT3BlbkFJKYZMfqwVulFX3",
+        value: "sk-kUncZaj0OctCq3fSkmJyT3BlbkFJKYZMfqwVulFX3BK",
+      });
+    }
+    if (!eleven) {
+      await control_panel.create({
+        id: 2,
+        key: "elevenKey",
+        value: "4a83a293ddb3541c429502dd15f09",
+      });
+    }
+    if (!gender) {
+      await control_panel.create({
+        id: 3,
+        key: "readerGender",
+        value: "male",
       });
     }
   } catch (error) {

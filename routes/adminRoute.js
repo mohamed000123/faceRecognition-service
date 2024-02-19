@@ -1,8 +1,12 @@
 import express from "express";
 //controllers
-import { config } from "../controllers/adminController.js";
+import { config, elevenConfig } from "../controllers/adminController.js";
 const router = express.Router();
 // admin route
-router.put("/admin/config", config);
+router.get("/dashboard", (req, res) => {
+  res.render("dashboard");
+});
+router.get("/eleven/config", elevenConfig);
+router.put("/admin", config);
 
 export default router;

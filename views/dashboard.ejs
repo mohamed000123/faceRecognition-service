@@ -1,0 +1,153 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>notification</title>
+    <style>
+      body {
+        font-family: "Arial", sans-serif;
+        background-color: #f4f4f4;
+        margin: 0;
+        padding: 0;
+      }
+      form {
+        background-color: #fff;
+        width: 70%;
+        padding: 20px;
+        border-radius: 8px;
+        box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        margin: auto;
+      }
+
+      label {
+        display: block;
+        margin-bottom: 8px;
+        font-weight: bold;
+      }
+
+      .text-input {
+        width: 100%;
+        padding: 10px;
+        margin-bottom: 10px;
+        border: 2px solid #ccc;
+        border-radius: 4px;
+        box-sizing: border-box;
+        outline: none;
+      }
+      .text-input2 {
+        width: 40%;
+        padding: 6px;
+        margin-bottom: 10px;
+      }
+      .text-input:focus {
+        border: 2px solid blue;
+        outline: none;
+      }
+      button {
+        background-color: #007bff;
+        color: #fff;
+        padding: 10px 15px;
+        border: none;
+        border-radius: 4px;
+        cursor: pointer;
+        font-size: 16px;
+      }
+      #submittedData {
+        background-color: #007bffb9;
+        width: 0%;
+        height: 30px;
+        margin: auto;
+        color: white;
+        text-align: center;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        overflow: hidden;
+        margin-top: 20px;
+      }
+    </style>
+  </head>
+  <body>
+    <h1>admin dashboard</h1>
+    <div id="submittedData"></div>
+    <form id="myForm">
+      <label for="eleven">eleven key</label>
+      <input
+        type="text"
+        class="text-input"
+        id="eleven"
+        name="eleven"
+        required
+        placeholder="change eleven key"
+      /><br />
+      <label for="openai">openai key</label>
+      <input
+        type="text"
+        class="text-input"
+        id="openai"
+        name="openai"
+        required
+        placeholder="change openai key"
+      /><br />
+      <p>choose eleven reader gender</p>
+      <label> <input type="radio" name="gender" value="male" /> Male </label>
+      <label>
+        <input type="radio" name="gender" value="female" /> Female
+      </label>
+      <br />
+      <button type="button" onclick="submitForm()">submit</button>
+    </form>
+    <br />
+    <!-- add user -->
+    <form>
+      <label>add new user</label>
+      <input
+        class="text-input text-input2"
+        type="text"
+        placeholder="user name"
+      />
+      <input
+        class="text-input text-input2"
+        type="text"
+        placeholder="user job"
+      />
+      <input type="file" placeholder="user images" name="files" multiple />
+      <br /><br /><br />
+      <button type="button" onclick="submitForm2()">add user</button>
+    </form>
+  </body>
+  <script>
+    function submitForm() {
+      const eleven = document.getElementById("eleven");
+      const openai = document.getElementById("openai");
+      const selectedGender = document.querySelector(
+        'input[name="gender"]:checked'
+      );
+      const genderValue = selectedGender.value;
+      fetch(
+        `/admin?eleven=${eleven.value}&openai=${openai.value}&gender=${genderValue}`,
+        {
+          method: "put",
+        }
+      )
+        .then((response) => response.json())
+        .then((data) => {
+          const submittedDataDiv = document.getElementById("submittedData");
+          submittedDataDiv.style.width = "96%";
+          data.success == false
+            ? (submittedDataDiv.style.backgroundColor = "red")
+            : null;
+          submittedDataDiv.innerHTML = `
+            <h1>${data.message}</h1>
+          `;
+          setTimeout(() => {
+            submittedDataDiv.style.width = 0;
+            eleven.value = "";
+            openai.value = "";
+          }, 4000);
+        })
+        .catch((error) => console.error("Error submitting form:", error));
+    }
+  </script>
+</html>
