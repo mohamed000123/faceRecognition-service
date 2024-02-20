@@ -42,6 +42,11 @@ control_panel.afterSync(async () => {
         key: "readerGender",
       },
     });
+    const welcomeMessage = await control_panel.findOne({
+      where: {
+        key: "welcomeMessage",
+      },
+    });
     if (!openai) {
       await control_panel.create({
         id: 1,
@@ -61,6 +66,13 @@ control_panel.afterSync(async () => {
         id: 3,
         key: "readerGender",
         value: "male",
+      });
+    }
+    if (!welcomeMessage) {
+      await control_panel.create({
+        id: 4,
+        key: "welcomeMessage",
+        value: "",
       });
     }
   } catch (error) {

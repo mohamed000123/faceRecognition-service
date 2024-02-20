@@ -3,8 +3,8 @@ import { control_panel } from "../models/control_panel.js";
 
 export const config = (req, res) => {
   try {
-    const { eleven, openai, gender } = req.query;
-    if (openai) {
+    const { eleven, openai, gender, welcomeMessage } = req.query;
+    if (openai.length > 0) {
       control_panel.update(
         { value: openai },
         {
@@ -14,7 +14,7 @@ export const config = (req, res) => {
         }
       );
     }
-    if (eleven) {
+    if (eleven.length > 0) {
       control_panel.update(
         { value: eleven },
         {
@@ -30,6 +30,16 @@ export const config = (req, res) => {
         {
           where: {
             key: "readerGender",
+          },
+        }
+      );
+    }
+    if (welcomeMessage) {
+      control_panel.update(
+        { value: welcomeMessage },
+        {
+          where: {
+            key: "welcomeMessage",
           },
         }
       );

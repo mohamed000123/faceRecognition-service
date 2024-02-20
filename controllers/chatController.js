@@ -36,13 +36,20 @@ let apiKey;
 export const userGreeting = async (req, res) => {
   try {
     const { userName, userJob } = req.body;
+    let welcomeMessage = await control_panel.findOne({
+      where: {
+        key: "welcomeMessage",
+      },
+    });
+    welcomeMessage = welcomeMessage.value;
+    if (!welcomeMessage.length > 0) {
+      welcomeMessage = `${userJob} انه يعمل ك ,${userName}  قل مرحبا ل  `;
+    }
 
     const api = new ChatGPTAPI({
       apiKey: apiKey,
     });
-    const chatgptResponse = await api.sendMessage(
-      `${userJob} انه يعمل ك ,${userName}  قل مرحبا ل  `
-    );
+    const chatgptResponse = await api.sendMessage(welcomeMessage);
     res.status(200).json(chatgptResponse.text);
     // res.status(200).json("hello mohamed amin, how are you doing today");
   } catch (err) {

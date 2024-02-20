@@ -3,6 +3,7 @@ import cors from "cors";
 //routers
 import chatRouter from "./routes/chatRoute.js";
 import adminRouter from "./routes/adminRoute.js";
+import userRouter from "./routes/userRoute.js";
 const app = express();
 
 app.listen(8000, () => {
@@ -22,3 +23,4 @@ app.get("/", (req, res) => {
 
 app.use("/", chatRouter);
 app.use("/", adminRouter);
+app.use("/", userRouter);
