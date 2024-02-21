@@ -12,7 +12,7 @@ const client = twilio(accountSid, authToken);
 let apiKey;
 (async function () {
   const result = await sequelize.query(
-    'SELECT table_name FROM information_schema.tables WHERE table_schema = "shutter" AND table_name = "control_panel"',
+    'SELECT table_name FROM information_schema.tables WHERE table_schema = "ai_robot_api" AND table_name = "control_panel"',
     {
       type: Sequelize.QueryTypes.SELECT,
     }
