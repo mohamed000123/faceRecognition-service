@@ -14,7 +14,7 @@ export const control_panel = sequelize.define(
       unique: true,
     },
     value: {
-      type: Sequelize.STRING,
+      type: Sequelize.STRING(1000),
       allowNull: false,
     },
   },

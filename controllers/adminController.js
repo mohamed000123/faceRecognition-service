@@ -4,7 +4,7 @@ import { control_panel } from "../models/control_panel.js";
 export const config = (req, res) => {
   try {
     const { eleven, openai, gender, welcomeMessage } = req.query;
-    if (openai.length > 0) {
+    if (openai.length > 30) {
       control_panel.update(
         { value: openai },
         {
@@ -14,7 +14,7 @@ export const config = (req, res) => {
         }
       );
     }
-    if (eleven.length > 0) {
+    if (eleven.length > 20) {
       control_panel.update(
         { value: eleven },
         {

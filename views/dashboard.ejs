@@ -97,7 +97,7 @@
         type="text"
         class="text-input"
         id="welcome"
-        placeholder="new welcome message"
+        placeholder=" `${userJob} انه يعمل ك ${userName}  قل مرحبا ل `"
       />
       <label>choose eleven reader gender</label>
       <label>
@@ -175,14 +175,12 @@
       const name = document.getElementById("name");
       const job = document.getElementById("job");
       const picturesInput = document.getElementById("pictures");
-      ////
       const formData = new FormData();
       formData.append("name", name);
       formData.append("job", job);
       for (const file of picturesInput.files) {
         formData.append("pictures", file);
       }
-      ////
       fetch(
         `/add-user?name=${name.value}&job=${job.value}&pictures=${picturesInput.files}`,
         {
