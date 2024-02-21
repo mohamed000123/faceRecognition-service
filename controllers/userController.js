@@ -15,13 +15,24 @@ export const addUser = async (req, res) => {
       await fsPromises.rename(pictures[i].path, newFilePath);
     }
     const user = await User.create({ name, job });
-    user.picture1 = `${name}/1.jpg`;
-    user.picture2 = `${name}/2.jpg`;
-    user.picture3 = `${name}/3.jpg`;
+    user.picture1 = `/uploads/${name}/1.jpg`;
+    user.picture2 = `/uploads/${name}/2.jpg`;
+    user.picture3 = `/uploads/${name}/3.jpg`;
     await user.save();
-    res.status(200).json({ message: "user added successfully", success: true });
+    res
+      .status(200)
+      .json({ message: "user was added successfully", success: true });
   } catch (e) {
     console.log(e);
     res.status(500).json({ message: "internal setver error", success: false });
+  }
+};
+
+export const getUsers = async (req, res) => {
+  try {
+    const users = await User.findAll();
+    res.status(200).json(users);
+  } catch {
+    res.status(500).json("internal Server Error");
   }
 };
