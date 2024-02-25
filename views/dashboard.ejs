@@ -138,6 +138,7 @@
     </form>
   </body>
   <script>
+    const submittedDataDiv = document.getElementById("submittedData");
     function submitForm() {
       const eleven = document.getElementById("eleven");
       const openai = document.getElementById("openai");
@@ -155,7 +156,6 @@
       )
         .then((response) => response.json())
         .then((data) => {
-          const submittedDataDiv = document.getElementById("submittedData");
           submittedDataDiv.style.width = "96%";
           data.success == false
             ? (submittedDataDiv.style.backgroundColor = "red")
@@ -178,6 +178,10 @@
       const formData = new FormData();
       formData.append("name", name);
       formData.append("job", job);
+      submittedDataDiv.style.width = "96%";
+      submittedDataDiv.innerHTML = `
+      <h1> .....loading </h1>
+    `;
       for (const file of picturesInput.files) {
         formData.append("pictures", file);
       }
@@ -190,7 +194,6 @@
       )
         .then((response) => response.json())
         .then((data) => {
-          const submittedDataDiv = document.getElementById("submittedData");
           submittedDataDiv.style.width = "96%";
           data.success == false
             ? (submittedDataDiv.style.backgroundColor = "red")
@@ -200,8 +203,8 @@
           `;
           setTimeout(() => {
             submittedDataDiv.style.width = 0;
-            eleven.value = "";
-            openai.value = "";
+            name.value = "";
+            job.value = "";
           }, 4000);
         })
         .catch((error) => console.error("Error submitting form:", error));

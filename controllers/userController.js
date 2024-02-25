@@ -7,7 +7,7 @@ export const addUser = async (req, res) => {
     const { name, job } = req.query;
     const pictures = req.files;
     // Create a new folder with the user's name
-    const userFolderPath = path.join(process.cwd(), "public/uploads", name);
+    const userFolderPath = path.join(process.cwd(), "/uploads/", name);
     await fsPromises.mkdir(userFolderPath, { recursive: true });
     // Process and save each uploaded file to the user's folder
     for (let i = 0; i < pictures.length; i++) {
@@ -32,7 +32,8 @@ export const getUsers = async (req, res) => {
   try {
     const users = await User.findAll();
     res.status(200).json(users);
-  } catch {
-    res.status(500).json("internal Server Error");
+  } catch (e) {
+    console.log(e);
+    res.status(500).json("internal Server Error", e);
   }
 };
