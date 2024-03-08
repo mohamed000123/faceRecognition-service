@@ -159,7 +159,7 @@
           submittedDataDiv.style.width = "96%";
           data.success == false
             ? (submittedDataDiv.style.backgroundColor = "red")
-            : null;
+            : (submittedDataDiv.style.backgroundColor = "blue");
           submittedDataDiv.innerHTML = `
             <h1>${data.message}</h1>
           `;
@@ -179,35 +179,47 @@
       formData.append("name", name);
       formData.append("job", job);
       submittedDataDiv.style.width = "96%";
+      submittedDataDiv.style.backgroundColor = "blue";
       submittedDataDiv.innerHTML = `
       <h1> .....loading </h1>
     `;
       for (const file of picturesInput.files) {
         formData.append("pictures", file);
       }
-      fetch(
-        `/add-user?name=${name.value}&job=${job.value}&pictures=${picturesInput.files}`,
-        {
-          method: "post",
-          body: formData,
-        }
-      )
-        .then((response) => response.json())
-        .then((data) => {
-          submittedDataDiv.style.width = "96%";
-          data.success == false
-            ? (submittedDataDiv.style.backgroundColor = "red")
-            : null;
-          submittedDataDiv.innerHTML = `
+      if (name.value && job.value && picturesInput.files.length == 3) {
+        fetch(
+          `/add-user?name=${name.value}&job=${job.value}&pictures=${picturesInput.files}`,
+          {
+            method: "post",
+            body: formData,
+          }
+        )
+          .then((response) => response.json())
+          .then((data) => {
+            submittedDataDiv.style.width = "96%";
+            data.success == false
+              ? (submittedDataDiv.style.backgroundColor = "red")
+              : (submittedDataDiv.style.backgroundColor = "blue");
+            submittedDataDiv.innerHTML = `
             <h1>${data.message}</h1>
           `;
-          setTimeout(() => {
-            submittedDataDiv.style.width = 0;
-            name.value = "";
-            job.value = "";
-          }, 4000);
-        })
-        .catch((error) => console.error("Error submitting form:", error));
+            setTimeout(() => {
+              submittedDataDiv.style.width = 0;
+              name.value = "";
+              job.value = "";
+            }, 4000);
+          })
+          .catch((error) => console.error("Error submitting form:", error));
+      } else {
+        submittedDataDiv.style.width = "96%";
+        submittedDataDiv.style.backgroundColor = "red";
+        submittedDataDiv.innerHTML = `
+        <h1> please fill all fields </h1>
+      `;
+        setTimeout(() => {
+          submittedDataDiv.style.width = 0;
+        }, 4000);
+      }
     }
   </script>
 </html>
